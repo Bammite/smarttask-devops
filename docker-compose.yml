@@ -25,6 +25,7 @@ services:
   # 2. Service Backend (API REST)
   backend:
     build: ./backend
+    image: bammite/smarttask-backend:v1
     container_name: smarttask-backend
     restart: always
     ports:
@@ -42,6 +43,7 @@ services:
   # 3. Service Frontend (Nginx)
   frontend:
     build: ./frontend
+    image: bammite/smarttask-frontend:v1
     container_name: smarttask-frontend
     restart: always
     ports:
