@@ -1,30 +1,19 @@
-version: '3.8'
-
-networks:
-  smarttask-network:
-    driver: bridge
-
-volumes:
-  db_data:
-
 services:
-  # 1. Service Base de Données (PostgreSQL)
   db:
-    image: postgres:15-alpine
+    image: mysql:8.0
     container_name: smarttask-db
     restart: always
     environment:
-      POSTGRES_DB: smarttask_db
-      POSTGRES_USER: smartuser
-      POSTGRES_PASSWORD: smartpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: smarttask_db
+      MYSQL_USER: smartuser
+      MYSQL_PASSWORD: smartpassword
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
     networks:
-      - smarttask-network
+      - smarttask-net
 
-  # 2. Service Backend (API REST)
   backend:
-    build: ./backend
     image: bammite/smarttask-backend:v1
     container_name: smarttask-backend
     restart: always
@@ -33,22 +22,27 @@ services:
     environment:
       DB_HOST: db
       DB_USER: smartuser
-      DB_PASS: smartpassword
+      DB_PASSWORD: smartpassword
       DB_NAME: smarttask_db
     depends_on:
       - db
     networks:
-      - smarttask-network
+      - smarttask-net
 
-  # 3. Service Frontend (Nginx)
   frontend:
-    build: ./frontend
     image: bammite/smarttask-frontend:v1
     container_name: smarttask-frontend
     restart: always
     ports:
-      - "8081:80"
+      - "80:80"
     depends_on:
       - backend
     networks:
-      - smarttask-network
+      - smarttask-net
+
+networks:
+  smarttask-net:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -1,11 +1,16 @@
-# SmartTask DevOps Project
+# SmartTask DevOps
 
-Projet de modernisation CI/CD et déploiement conteneurisé pour la société SmartTech.
+Projet de conteneurisation et de déploiement CI/CD pour l'application SmartTask.
 
-## Composants
-- Frontend (interface utilisateur)
-- Backend (API REST)
-- Base de données (PostgreSQL)
+## Architecture
+
+- **Frontend** : Application Web (Port 80)
+- **Backend** : API REST (Port 5000)
+- **Database** : MySQL 8.0 (Port 3306)
 
 ## Déploiement Local
-Exécuter la commande suivante : `docker compose up -d`
+
+Pour lancer l'application en local :
+
+```bash
+docker compose up -d
