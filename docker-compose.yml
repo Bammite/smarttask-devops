@@ -1,0 +1,52 @@
+version: '3.8'
+
+networks:
+  smarttask-network:
+    driver: bridge
+
+volumes:
+  db_data:
+
+services:
+  # 1. Service Base de Données (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: smarttask-db
+    restart: always
+    environment:
+      POSTGRES_DB: smarttask_db
+      POSTGRES_USER: smartuser
+      POSTGRES_PASSWORD: smartpassword
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - smarttask-network
+
+  # 2. Service Backend (API REST)
+  backend:
+    build: ./backend
+    container_name: smarttask-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: smartuser
+      DB_PASS: smartpassword
+      DB_NAME: smarttask_db
+    depends_on:
+      - db
+    networks:
+      - smarttask-network
+
+  # 3. Service Frontend (Nginx)
+  frontend:
+    build: ./frontend
+    container_name: smarttask-frontend
+    restart: always
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - smarttask-network
