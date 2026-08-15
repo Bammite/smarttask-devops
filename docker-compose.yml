@@ -10,6 +10,7 @@ services:
       MYSQL_PASSWORD: smartpassword
     volumes:
       - db_data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - smarttask-net
 

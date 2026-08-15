@@ -1,141 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechStore - E-Commerce Modern</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTask - Application de Gestion de Tâches</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans">
+<body>
+    <div class="app-container">
+        <!-- En-tête -->
+        <header class="app-header">
+            <h1>SmartTask <span>DevOps</span></h1>
+            <p>Gestionnaire de tâches collaboratif</p>
+        </header>
 
-  <!-- Navbar -->
-  <nav class="border-b border-gray-800 bg-gray-900/80 backdrop-blur fixed w-full z-50 top-0">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="text-2xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">SmartStore</span>
-      </div>
-      <div class="flex items-center gap-6">
-        <a href="#products" class="hover:text-indigo-400 transition">Produits</a>
-        <div class="relative cursor-pointer" onclick="toggleCart()">
-          <i class="fa-solid fa-cart-shopping text-xl"></i>
-          <span id="cart-count" class="absolute -top-2 -right-3 bg-indigo-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
-        </div>
-      </div>
+        <!-- Formulaire d'ajout de tâche -->
+        <section class="task-form-container">
+            <form id="task-form">
+                <input type="text" id="task-title" placeholder="Titre de la tâche..." required>
+                <select id="task-priority">
+                    <option value="low">Basse</option>
+                    <option value="medium" selected>Moyenne</option>
+                    <option value="high">Haute</option>
+                    <option value="urgent">Urgente</option>
+                </select>
+                <button type="submit" id="add-btn">+ Ajouter</button>
+            </form>
+        </section>
+
+        <!-- Tableau des tâches (Kanban) -->
+        <main class="task-board">
+            <!-- Colonne À faire -->
+            <div class="task-column" id="col-todo">
+                <h2>À faire <span class="counter" id="count-todo">0</span></h2>
+                <div class="task-list" id="list-todo"></div>
+            </div>
+
+            <!-- Colonne En cours -->
+            <div class="task-column" id="col-in_progress">
+                <h2>En cours <span class="counter" id="count-in_progress">0</span></h2>
+                <div class="task-list" id="list-in_progress"></div>
+            </div>
+
+            <!-- Colonne Terminé -->
+            <div class="task-column" id="col-done">
+                <h2>Terminé <span class="counter" id="count-done">0</span></h2>
+                <div class="task-list" id="list-done"></div>
+            </div>
+        </main>
     </div>
-  </nav>
 
-  <!-- Hero Section -->
-  <section class="pt-32 pb-20 px-6 text-center">
-    <span class="text-xs font-semibold uppercase tracking-widest text-indigo-400 bg-indigo-950/60 border border-indigo-800/50 px-4 py-1.5 rounded-full">Prochaine Génération</span>
-    <h1 class="text-4xl md:text-6xl font-extrabold mt-6 mb-4 tracking-tight">
-      Équipements Tech de Pointe
-    </h1>
-    <p class="text-gray-400 max-w-xl mx-auto text-lg">
-      Découvrez notre sélection exclusive de matériel haute performance pour développeurs et passionnés.
-    </p>
-  </section>
-
-  <!-- Products Grid -->
-  <section id="products" class="max-w-7xl mx-auto px-6 pb-24">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="products-list">
-      <!-- Les produits seront injectés ici -->
-    </div>
-  </section>
-
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex justify-end">
-    <div class="bg-gray-800 w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
-      <div>
-        <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
-          <h2 class="text-xl font-bold">Votre Panier</h2>
-          <button onclick="toggleCart()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-        </div>
-        <div id="cart-items" class="space-y-4 max-h-[60vh] overflow-y-auto">
-          <p class="text-gray-400 text-center py-8">Votre panier est vide.</p>
-        </div>
-      </div>
-      <div class="border-t border-gray-700 pt-4">
-        <div class="flex justify-between font-bold text-lg mb-4">
-          <span>Total :</span>
-          <span id="cart-total" class="text-indigo-400">0 €</span>
-        </div>
-        <button onclick="checkout()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-lg font-semibold transition">Commander</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const products = [
-      { id: 1, name: "MacBook Pro M3", price: 1999, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" },
-      { id: 2, name: "Casque Sony WH-1000XM5", price: 349, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
-      { id: 3, name: "Clavier Mécanique RGB", price: 129, img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500" }
-    ];
-
-    let cart = [];
-
-    function renderProducts() {
-      const list = document.getElementById('products-list');
-      list.innerHTML = products.map(p => `
-        <div class="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-4 hover:border-indigo-500/50 transition">
-          <img src="${p.img}" class="w-full h-48 object-cover rounded-xl mb-4" alt="${p.name}">
-          <h3 class="text-lg font-bold">${p.name}</h3>
-          <div class="flex items-center justify-between mt-4">
-            <span class="text-xl font-extrabold text-indigo-400">${p.price} €</span>
-            <button onclick="addToCart(${p.id})" class="bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-              + Ajouter
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function addToCart(id) {
-      const item = products.find(p => p.id === id);
-      cart.push(item);
-      updateCart();
-    }
-
-    function updateCart() {
-      document.getElementById('cart-count').innerText = cart.length;
-      const container = document.getElementById('cart-items');
-      if (cart.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center py-8">Votre panier est vide.</p>';
-        document.getElementById('cart-total').innerText = '0 €';
-        return;
-      }
-      container.innerHTML = cart.map((p, index) => `
-        <div class="flex justify-between items-center bg-gray-900/50 p-3 rounded-lg">
-          <div>
-            <p class="font-semibold text-sm">${p.name}</p>
-            <p class="text-xs text-indigo-400">${p.price} €</p>
-          </div>
-          <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-300 text-sm"><i class="fa-solid fa-trash"></i></button>
-        </div>
-      `).join('');
-
-      const total = cart.reduce((sum, p) => sum + p.price, 0);
-      document.getElementById('cart-total').innerText = `${total} €`;
-    }
-
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCart();
-    }
-
-    function toggleCart() {
-      document.getElementById('cart-modal').classList.toggle('hidden');
-    }
-
-    function checkout() {
-      if (cart.length === 0) return alert('Votre panier est vide !');
-      alert('Commande validée avec succès !');
-      cart = [];
-      updateCart();
-      toggleCart();
-    }
-
-    renderProducts();
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
