@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     environment {
-        
-        def dockerRegistry = 'bammite' 
-        def appName = 'smarttask'
-        def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}" // Ex: Dev-5 ou Prod-12
+        DOCKER_REGISTRY = 'bammite'
+        APP_NAME        = 'smarttask'
+        IMAGE_TAG       = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -19,10 +18,10 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 echo "Construction de l'image Frontend..."
-                sh "docker build -t ${dockerRegistry}/${appName}-frontend:${imageTag} ./frontend"
+                sh "docker build -t ${DOCKER_REGISTRY}/${APP_NAME}-frontend:${IMAGE_TAG} ./frontend"
                 
                 echo "Construction de l'image Backend..."
-                sh "docker build -t ${dockerRegistry}/${appName}-backend:${imageTag} ./backend"
+                sh "docker build -t ${DOCKER_REGISTRY}/${APP_NAME}-backend:${IMAGE_TAG} ./backend"
             }
         }
 
@@ -33,10 +32,10 @@ pipeline {
                     sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                     
                     echo "Publication de l'image Frontend..."
-                    sh "docker push ${dockerRegistry}/${appName}-frontend:${imageTag}"
+                    sh "docker push ${DOCKER_REGISTRY}/${APP_NAME}-frontend:${IMAGE_TAG}"
                     
                     echo "Publication de l'image Backend..."
-                    sh "docker push ${dockerRegistry}/${appName}-backend:${imageTag}"
+                    sh "docker push ${DOCKER_REGISTRY}/${APP_NAME}-backend:${IMAGE_TAG}"
                 }
             }
         }
@@ -50,9 +49,8 @@ pipeline {
             echo "Erreur lors de l'exécution du pipeline. Vérifiez les logs."
         }
         always {
-            // Nettoyage des images locales pour libérer de la place
-            sh "docker rmi ${dockerRegistry}/${appName}-frontend:${imageTag} || true"
-            sh "docker rmi ${dockerRegistry}/${appName}-backend:${imageTag} || true"
+            sh "docker rmi ${DOCKER_REGISTRY}/${APP_NAME}-frontend:${IMAGE_TAG} || true"
+            sh "docker rmi ${DOCKER_REGISTRY}/${APP_NAME}-backend:${IMAGE_TAG} || true"
         }
     }
 }
