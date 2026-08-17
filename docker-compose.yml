@@ -15,6 +15,7 @@ services:
       - smarttask-net
 
   backend:
+    build: ./backend
     image: bammite/smarttask-backend:v1
     container_name: smarttask-backend
     restart: always
@@ -31,6 +32,7 @@ services:
       - smarttask-net
 
   frontend:
+    build: ./frontend
     image: bammite/smarttask-frontend:v1
     container_name: smarttask-frontend
     restart: always
