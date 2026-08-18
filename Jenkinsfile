@@ -30,7 +30,6 @@ pipeline {
             steps {
                 echo "Connexion au Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    // Utilisation de double quotes pour injecter correctement le token
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
                     echo "Publication de l'image Frontend..."
