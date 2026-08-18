@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo "Connexion au Docker Hub..."
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh 'docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"'
 
                     echo "Publication de l'image Frontend..."
                     sh "docker push ${DOCKER_REGISTRY}/${APP_NAME}-frontend:${IMAGE_TAG}"
@@ -44,6 +44,7 @@ pipeline {
 
     post {
         always {
+            sh "docker logout || true"
             sh "docker rmi ${DOCKER_REGISTRY}/${APP_NAME}-frontend:${IMAGE_TAG} || true"
             sh "docker rmi ${DOCKER_REGISTRY}/${APP_NAME}-backend:${IMAGE_TAG} || true"
         }
